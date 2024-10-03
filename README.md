@@ -58,7 +58,8 @@ Start the development server to verify everything is set up correctly:
 You should now be able to access the application at http://127.0.0.1:8000/api/.
 
 ## **API Endpoints**
-- ` http://127.0.0.1:8000/api/`: Base URL
+Base URL - `http://127.0.0.1:8000/api/`
+
 - `POST /create-applicant/`: Create a new applicant.
 - `POST /add-id-document/{applicant_id}/`: Upload applicant ID document.
 - `GET /get-verification-status/{applicant_id}/`: Get applicant verification status.
