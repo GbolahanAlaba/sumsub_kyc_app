@@ -146,15 +146,16 @@ class SumsubViewSet(viewsets.ViewSet):
         response = requests.Session().send(signed_request)
         
         if response.status_code == 200:
+            data = response.json()
 
-            data = response.json().get("data", {})
+            """ Extract identity_data directly from the top-level response """
             identity_data = data.get("IDENTITY", {})
             selfie_data = data.get("SELFIE", None)
 
 
             """Extract values from the verification status"""
-            country = identity_data.get("country", "")
-            id_doc_type = identity_data.get("idDocType", "")
+            country = identity_data.get("country", "Unknown")
+            id_doc_type = identity_data.get("idDocType", "Unknown")
             image_ids = identity_data.get("imageIds", [])
             image_review_results = identity_data.get("imageReviewResults", {})
             forbidden = identity_data.get("forbidden", False)
@@ -167,7 +168,7 @@ class SumsubViewSet(viewsets.ViewSet):
             step_statuses_str = json.dumps(step_statuses) if step_statuses else "[]"
             image_statuses_str = json.dumps(image_statuses) if image_statuses else "[]"
 
-
+            # Create or update the verification status in the database
             verification_status, created = VerificationStatus.objects.update_or_create(
                 applicant_id=applicant_id,
                 defaults={
@@ -182,10 +183,13 @@ class SumsubViewSet(viewsets.ViewSet):
                     'selfie': json.dumps(selfie_data) if selfie_data else None,
                 }
             )
-            return Response({"status": "success", "message": f"Verification status for: {pk}", "data": response.json()}, status=status.HTTP_200_OK)
-        
+            return Response({"status": "success", "message": f"Verification status for: {applicant_id}", "data": data}, status=status.HTTP_200_OK)
         else:
-            return Response({"status": "failed", "message": response.json()}, status=response.status_code)
+            return Response({"status": "failed", "message": "Error fetching data from Sumsub."}, status=response.status_code)
+
+        
+        # else:
+        #     return Response({"status": "failed", "message": response.json()}, status=response.status_code)
 
 
 
