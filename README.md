@@ -63,12 +63,13 @@ Base URL - `http://127.0.0.1:8000/api/`
 - `POST create-applicant/`: Create a new applicant.
 - `POST add-id-document/{applicant_id}/`: Upload applicant ID document.
 - `GET get-verification-status/{applicant_id}/`: Get applicant verification status.
+- `GET get-saved-verification-status/{applicant_id}/`: Get applicant verification status.
 
 
 ## **API Implementation**
 
 
-#### POST /create-applicant/
+#### POST create-applicant/
 
 - **Request Body**:
 
@@ -159,7 +160,7 @@ Base URL - `http://127.0.0.1:8000/api/`
 
 
 
-#### POST /add-id-document/{applicant_id}/
+#### POST add-id-document/{applicant_id}/
 
 - **Request Body**:
 
@@ -190,7 +191,7 @@ Base URL - `http://127.0.0.1:8000/api/`
 
 
 
-#### GET /get-verification-status/{applicant_id}/
+#### GET get-verification-status/{applicant_id}/
 
 - **Response**:
 
@@ -201,6 +202,35 @@ Base URL - `http://127.0.0.1:8000/api/`
     "data": {
         "IDENTITY": null,
         "SELFIE": null
+    }
+  }
+
+`200 OK` with applicant successful verification status.
+
+`400 Bad Request` on validation error.
+
+`509 Internal Server Error` on server error.
+
+
+#### GET get-saved-verification-status/{applicant_id}/
+
+- **Response**:
+
+  ```json
+  {
+    "status": "success",
+    "message": "Verification data for applicant 66fe7d5e43297b0628f2054d",
+    "data": {
+        "applicant_id": "66fe7d5e43297b0628f2054d",
+        "country": "USA",
+        "id_doc_type": "PASSPORT",
+        "image_ids": "[62458182]",
+        "image_review_results": "{\"62458182\": {}}",
+        "forbidden": false,
+        "partial_completion": null,
+        "step_statuses": "[]",
+        "image_statuses": "[]",
+        "selfie": null
     }
   }
 
