@@ -1,5 +1,5 @@
 
-# **Sumsub KYC API**
+# **Sumsub KYC App**
 
 ## **Overview**
 
