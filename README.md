@@ -94,14 +94,60 @@ You should now be able to access the application at http://127.0.0.1:8000/.
 
 
   {
-    "status": "success",
-    "message": "User enrolled",
-    "data": {
-        "user_id": "7903ed92-9037-4bcc-b863-f60b7f807e25",
-        "first_name": "Gbolahan",
-        "last_name": "Alaba",
-        "email": "gb0lahan@gmainl.com",
-        "created_at": "2024-09-12T13:03:55.089390Z"
+    "status": "failed",
+    "message": {
+        "id": "66fe86edf6ef587111670580",
+        "createdAt": "2024-10-03 11:58:37",
+        "createdBy": "service-sbx-APBRRXWFWAVYKL-app-gb",
+        "key": "APBRRXWFWAVYKL",
+        "clientId": "entacrest.com",
+        "inspectionId": "66fe86edf6ef587111670580",
+        "externalUserId": "554544",
+        "info": {
+            "companyInfo": {
+                "companyName": "Expedier",
+                "registrationNumber": "BC123456",
+                "country": "Nigeria",
+                "legalAddress": "3, Ajilekege Street, Idimu",
+                "address": {
+                    "street": "Sola Makidne",
+                    "postCode": "100275"
+                }
+            }
+        },
+        "applicantPlatform": "API",
+        "requiredIdDocs": {
+            "docSets": [
+                {
+                    "idDocSetType": "IDENTITY",
+                    "types": [
+                        "DRIVERS",
+                        "ID_CARD",
+                        "RESIDENCE_PERMIT",
+                        "PASSPORT"
+                    ],
+                    "videoRequired": "disabled"
+                },
+                {
+                    "idDocSetType": "SELFIE",
+                    "types": [
+                        "SELFIE"
+                    ],
+                    "videoRequired": "photoRequired"
+                }
+            ]
+        },
+        "review": {
+            "reviewId": "JokQk",
+            "attemptId": "BLObF",
+            "attemptCnt": 0,
+            "levelName": "Cam",
+            "levelAutoCheckMode": null,
+            "createDate": "2024-10-03 11:58:37+0000",
+            "reviewStatus": "init",
+            "priority": 0
+        },
+        "type": "individual"
     }
   }
 
