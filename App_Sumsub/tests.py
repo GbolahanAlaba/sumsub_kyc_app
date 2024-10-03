@@ -82,18 +82,20 @@ class SumsubViewSetTestCase(APITestCase):
         self.assertEqual(response.data['status'], 'failed')
         self.assertEqual(response.data['message'], 'Error fetching data from Sumsub.')
 
+
+    # Saved verification status
     def test_get_saved_verification_data_success(self):
         response = self.client.get(self.get_saved_verification_data_url(self.applicant.applicant_id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], 'success')
         self.assertIn('data', response.data)
-        self.assertEqual(response.data['data']['applicant_id'], self.applicant.applicant_id)  # Adjust field based on your serializer
+        self.assertEqual(response.data['data']['applicant_id'], self.applicant.applicant_id)  
 
     def test_get_saved_verification_data_missing_applicant_id(self):
         response = self.client.get(self.get_saved_verification_data_url(None))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['status'], 'failed')
-        self.assertEqual(response.data['message'], 'Applicant not found')
+        self.assertEqual(response.data['message'], 'Applicant ID is required')
 
     def test_get_saved_verification_data_applicant_not_found(self):
         response = self.client.get(self.get_saved_verification_data_url('nonexistent_id'))
