@@ -76,7 +76,7 @@ class SumsubViewSet(viewsets.ViewSet):
         response = requests.Session().send(signed_request)
         
         if response.status_code == 201:
-            return Response({"status": "success", "message": "applicant created successfully", "data": response.json()}, status=status.HTTP_201_CREATED)
+            return Response({"status": "success", "message": "Applicant created successfully", "data": response.json()}, status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "failed", "message": response.json()}, status=response.status_code)
 
@@ -138,9 +138,7 @@ class SumsubViewSet(viewsets.ViewSet):
         SUMSUB_TEST_BASE_URL = "https://api.sumsub.com"
         url = f"{SUMSUB_TEST_BASE_URL}/resources/applicants/{pk}/requiredIdDocsStatus"
         request_obj = requests.Request('GET', url)
-
         signed_request = self.sign_request(request_obj)
-
         response = requests.Session().send(signed_request)
         
         if response.status_code == 200:
