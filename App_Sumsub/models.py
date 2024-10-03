@@ -3,6 +3,7 @@ import uuid
 
 
 class VerificationStatus(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     applicant_id = models.CharField(max_length=255, unique=True)
     country = models.CharField(max_length=255)
     id_doc_type = models.CharField(max_length=255)
