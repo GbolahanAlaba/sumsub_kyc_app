@@ -195,8 +195,10 @@ class SumsubViewSet(viewsets.ViewSet):
         applicant_id = pk
         if not applicant_id:
             return Response({"status": "failed", "message": "Applicant ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        elif not VerificationStatus.objects.filter(applicant_id=applicant_id).first():
+            return Response({"status": "failed", "message": "Applicant not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            applicant = VerificationStatus.objects.filter(applicant_id=applicant_id).first()
+            applicant = VerificationStatus.objects.get(applicant_id=applicant_id)
             serializer = VerificationSerializer(applicant)
             print(applicant)
             return Response({"status": "success", "message": f"Verification data for applicant {applicant_id}", "data": serializer.data}, status=status.HTTP_200_OK)
