@@ -11,15 +11,13 @@ from datetime import date, timedelta, datetime
 class SumsubViewSetTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.enroll_user_url = reverse('user-enroll')
-        self.books_url = reverse('all-books')
-        self.view_book_url = lambda book_id: reverse('book-view', kwargs={'book_id': book_id})
-        self.borrow_book_url = reverse('book-borrow')
-        self.add_book_url = reverse('book-add')
-        self.remove_book_url = lambda book_id: reverse('book-remove', kwargs={'book_id': book_id})
+        self.create_applicant_url = reverse('applicant-creation')
+        self.add_document = lambda pk: reverse('document-add', kwargs={'pk': pk})
+        self.get_verification_status_url = lambda pk: reverse('verification-status', kwargs={'pk': pk})
+        self.get_saved_verification_data_url = lambda pk: reverse('saved-verification', kwargs={'pk': pk})
+   
  
         
-
 
 
 # TEST FOR URLS
