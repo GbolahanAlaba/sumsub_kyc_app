@@ -61,7 +61,7 @@ class SumsubViewSet(viewsets.ViewSet):
         if not external_user_id:
             return Response({"status": "failed", "message": "externalUserId is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        body = {
+        payload = {
             "externalUserId": external_user_id,
             "info": info,
             "type": type,
@@ -69,7 +69,7 @@ class SumsubViewSet(viewsets.ViewSet):
 
         url = f"https://api.sumsub.com/resources/applicants?levelName={level_name}"
         headers = {'Content-Type': 'application/json'}
-        request_obj = requests.Request('POST', url, headers=headers, json=body)
+        request_obj = requests.Request('POST', url, headers=headers, json=payload)
 
         signed_request = self.sign_request(request_obj)
 
@@ -91,11 +91,13 @@ class SumsubViewSet(viewsets.ViewSet):
         if not img_url or not id_doc_type or not country:
             return Response({"status": "failed", "message": "img_url, idDocType, and country are required"}, status=status.HTTP_400_BAD_REQUEST)
 
+        """Download the image"""
         try:
             img_response = requests.get(img_url, stream=True, timeout=settings.REQUEST_TIMEOUT)
             img_response.raise_for_status()
 
-            img_file_path = 'img.jpg'
+            """Save the image temporarily"""
+            img_file_path = 'images/img.jpg'
             with open(img_file_path, 'wb') as handle:
                 for block in img_response.iter_content(1024):
                     if not block:
