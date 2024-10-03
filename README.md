@@ -55,21 +55,21 @@ Apply the migrations to set up your database schema:
 Start the development server to verify everything is set up correctly:
 
 `python manage.py runserver`
-You should now be able to access the application at http://127.0.0.1:8000/api/.
+You should now be able to access the application at http://127.0.0.1:8000/api
 
 ## **API Endpoints**
-Base URL - `http://127.0.0.1:8000/api/`
+Base URL - `http://127.0.0.1:8000/api`
 
-- `POST create-applicant/`: Create a new applicant.
-- `POST add-id-document/{applicant_id}/`: Upload applicant ID document.
-- `GET get-verification-status/{applicant_id}/`: Get applicant verification status.
-- `GET get-saved-verification-status/{applicant_id}/`: Get applicant verification status.
+- `POST /create-applicant/`: Create a new applicant.
+- `POST /add-id-document/{applicant_id}/`: Upload applicant ID document.
+- `GET /get-verification-status/{applicant_id}/`: Get applicant verification status.
+- `GET /get-saved-verification-status/{applicant_id}/`: Get applicant verification status.
 
 
 ## **API Implementation**
 
 
-#### POST create-applicant/
+#### POST /create-applicant/
 
 - **Request Body**:
 
@@ -160,7 +160,7 @@ Base URL - `http://127.0.0.1:8000/api/`
 
 
 
-#### POST add-id-document/{applicant_id}/
+#### POST /add-id-document/{applicant_id}/
 
 - **Request Body**:
 
@@ -191,7 +191,7 @@ Base URL - `http://127.0.0.1:8000/api/`
 
 
 
-#### GET get-verification-status/{applicant_id}/
+#### GET /get-verification-status/{applicant_id}/
 
 - **Response**:
 
@@ -212,7 +212,7 @@ Base URL - `http://127.0.0.1:8000/api/`
 `509 Internal Server Error` on server error.
 
 
-#### GET get-saved-verification-status/{applicant_id}/
+#### GET /get-saved-verification-status/{applicant_id}/
 
 - **Response**:
 
