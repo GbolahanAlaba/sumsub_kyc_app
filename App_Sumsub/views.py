@@ -133,6 +133,7 @@ class SumsubViewSet(viewsets.ViewSet):
             logging.error(f"Error while adding document: {str(e)}")
             return Response({"status": "failed", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        
     @handle_exceptions
     @action(detail=True, methods=['get'])
     def get_applicant_verification_status(self, request, pk=None):
@@ -156,7 +157,6 @@ class SumsubViewSet(viewsets.ViewSet):
             identity_data = data.get("IDENTITY", {})
             selfie_data = data.get("SELFIE", None)
 
-
             """Extract values from the verification status"""
             country = identity_data.get("country", "Unknown")
             id_doc_type = identity_data.get("idDocType", "Unknown")
@@ -166,7 +166,6 @@ class SumsubViewSet(viewsets.ViewSet):
             partial_completion = identity_data.get("partialCompletion", None)
             step_statuses = identity_data.get("stepStatuses", None)
             image_statuses = identity_data.get("imageStatuses", [])
-
 
             """ Create or update the verification status in the database """
             verification_status, created = VerificationStatus.objects.update_or_create(
