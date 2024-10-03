@@ -5,8 +5,10 @@ from rest_framework import serializers, validators
 
 
 
-class VerificationSerializer(serializers.Serializer):
+class VerificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VerificationStatus
-        fields = '__all__'
+        fields = ['applicant_id', 'country', 'id_doc_type', 'image_ids', 
+                  'image_review_results', 'forbidden', 'partial_completion', 
+                  'step_statuses', 'image_statuses', 'selfie']

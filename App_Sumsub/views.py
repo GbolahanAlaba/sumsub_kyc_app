@@ -198,5 +198,6 @@ class SumsubViewSet(viewsets.ViewSet):
         else:
             applicant = VerificationStatus.objects.filter(applicant_id=applicant_id).first()
             serializer = VerificationSerializer(applicant)
+            print(applicant)
             return Response({"status": "success", "message": f"Verification data for applicant {applicant_id}", "data": serializer.data}, status=status.HTTP_200_OK)
 
