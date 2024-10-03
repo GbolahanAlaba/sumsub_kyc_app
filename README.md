@@ -1,5 +1,5 @@
 
-# **Library API**
+# **Sumsub KYC API**
 
 ## **Overview**
 
@@ -72,10 +72,20 @@ You should now be able to access the application at http://127.0.0.1:8000/.
 - **Request Body**:
 
   ```json
-  {
-    "first_name": "Gbolahan",
-    "last_name": "Alaba",
-    "email": "gbolahan@gmail.com",
+  {  
+    "levelName": "Cam",
+    "externalUserId": "55544",
+    "type": "individual",
+    "info": { "companyInfo": {
+            "address": {
+                "street": "Sola Makidne",
+                "postCode": "100275"
+            },
+            "companyName": "Expedier",
+            "registrationNumber": "BC123456",
+            "country": "Nigeria",
+            "legalAddress": "3, Ajilekege Street, Idimu"
+        } }
   }
 
 - **Response**:
