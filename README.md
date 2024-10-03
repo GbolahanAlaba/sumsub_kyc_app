@@ -55,19 +55,19 @@ Apply the migrations to set up your database schema:
 Start the development server to verify everything is set up correctly:
 
 `python manage.py runserver`
-You should now be able to access the application at http://127.0.0.1:8000/.
+You should now be able to access the application at http://127.0.0.1:8000/api/.
 
 ## **API Endpoints**
 
-- `POST /create-applicant`: Create a new applicant.
+- `POST /create-applicant/`: Create a new applicant.
 - `POST /add-id-document/{applicant_id}`: Upload applicant ID document.
-- `GET /applicant-statusk/{applicant_id}/`: Get applicant verification status.
+- `GET /applicant-status/{applicant_id}/`: Get applicant verification status.
 
 
 ## **API Implementation**
 
 
-#### POST /enroll-user/
+#### POST /create-applicant/
 
 - **Request Body**:
 
@@ -153,48 +153,62 @@ You should now be able to access the application at http://127.0.0.1:8000/.
 
 `201 Created` on success.
 
-`400 Bad Request` on validation error.
+`409 Conflict` on conflict error.
+
+`509 Internal Server Error` on server error.
 
 
-#### GET /borrowed-books-and-user/
+
+#### POST /add-id-document/{applicant_id}/
+
+- **Request Body**:
+
+  ```json
+  {
+    "img_url": "https://www.ryrob.com/wp-content/uploads/2020/04/What-is-a-URL-Website-URLs-Explained-and-Best-Practices-for-Creating-URLs.jpg",
+    "idDocType": "PASSPORT",
+    "country": "USA"
+  }
 
 - **Response**:
 
   ```json
-  [
-    {
-        "first_name": "Gbolahan",
-        "last_name": "Alaba",
-        "email": "gb0lahan@gmainl.com",
-        "borrowed_books": [
-            {
-                "borrow_id": "def65e2f-e74b-46bd-a577-538082e82062",
-                "user": "Gbolahan",
-                "book": "Forge",
-                "borrow_date": "2024-09-14",
-                "return_date": "2024-09-24"
-            }
-        ]
-    },
-    {
-        "first_name": "Dorcas",
-        "last_name": "Alaba",
-        "email": "dorcas@gmainl.com",
-        "borrowed_books": [
-            {
-                "borrow_id": "8a416d1e-8571-496c-b667-0b7152dbf7fd",
-                "user": "Dorcas",
-                "book": "Forge",
-                "borrow_date": "2024-09-14",
-                "return_date": "2024-09-24"
-            }
-        ]
+  {
+    "status": "success",
+    "message": "Document added successfully",
+    "data": {
+        "idDocType": "PASSPORT",
+        "country": "USA"
     }
-  ]
+  }
 
-`200 OK` with books data on success.
+`201 Created` on success.
+
+`409 Conflict` on conflict error.
+
+`509 Internal Server Error` on server error.
+
+
+
+#### GET /applicant-status/{applicant_id}/
+
+- **Response**:
+
+  ```json
+  {
+    "status": "success",
+    "message": "Verification status for: 66fe7d5e43297b0628f2054d",
+    "data": {
+        "IDENTITY": null,
+        "SELFIE": null
+    }
+  }
+
+`200 OK` with applicant successful verification status.
 
 `400 Bad Request` on validation error.
+
+`509 Internal Server Error` on server error.
 
 
 ## **Testing**
