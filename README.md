@@ -61,7 +61,7 @@ You should now be able to access the application at http://127.0.0.1:8000/api/.
 
 - `POST /create-applicant/`: Create a new applicant.
 - `POST /add-id-document/{applicant_id}/`: Upload applicant ID document.
-- `GET /applicant-status/{applicant_id}/`: Get applicant verification status.
+- `GET /get-verification-status/{applicant_id}/`: Get applicant verification status.
 
 
 ## **API Implementation**
@@ -189,7 +189,7 @@ You should now be able to access the application at http://127.0.0.1:8000/api/.
 
 
 
-#### GET /applicant-status/{applicant_id}/
+#### GET /get-verification-status/{applicant_id}/
 
 - **Response**:
 
