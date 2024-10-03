@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
+from . models import VerificationStatus
+from . serializers import VerificationSerializer
 import requests
 import json
 from rest_framework import viewsets, status
@@ -11,7 +13,6 @@ import hashlib
 import hmac
 import json
 import time
-import requests
 import logging
 
 def handle_exceptions(func):
@@ -130,27 +131,75 @@ class SumsubViewSet(viewsets.ViewSet):
 
 
     @action(detail=True, methods=['get'])
-    def get_applicant_status(self, request, pk=None):
+    def get_applicant_verification_status(self, request, pk=None):
         """
         Get the status of an applicant using the applicant ID.
         """
-        if not pk:
+        applicant_id = pk
+        if not applicant_id:
             return Response({"status": "failed", "message": "Applicant ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         SUMSUB_TEST_BASE_URL = "https://api.sumsub.com"
-        url = f"{SUMSUB_TEST_BASE_URL}/resources/applicants/{pk}/requiredIdDocsStatus"
+        url = f"{SUMSUB_TEST_BASE_URL}/resources/applicants/{applicant_id}/requiredIdDocsStatus"
         request_obj = requests.Request('GET', url)
         signed_request = self.sign_request(request_obj)
         response = requests.Session().send(signed_request)
         
         if response.status_code == 200:
+
+            data = response.json().get("data", {})
+            identity_data = data.get("IDENTITY", {})
+            selfie_data = data.get("SELFIE", None)
+
+
+            """Extract values from the verification status"""
+            country = identity_data.get("country", "")
+            id_doc_type = identity_data.get("idDocType", "")
+            image_ids = identity_data.get("imageIds", [])
+            image_review_results = identity_data.get("imageReviewResults", {})
+            forbidden = identity_data.get("forbidden", False)
+            partial_completion = identity_data.get("partialCompletion", None)
+            step_statuses = identity_data.get("stepStatuses", None)
+            image_statuses = identity_data.get("imageStatuses", [])
+
+            image_ids_str = json.dumps(image_ids) if image_ids else "[]"
+            image_review_results_str = json.dumps(image_review_results) if image_review_results else "{}"
+            step_statuses_str = json.dumps(step_statuses) if step_statuses else "[]"
+            image_statuses_str = json.dumps(image_statuses) if image_statuses else "[]"
+
+
+            verification_status, created = VerificationStatus.objects.update_or_create(
+                applicant_id=applicant_id,
+                defaults={
+                    'country': country,
+                    'id_doc_type': id_doc_type,
+                    'image_ids': image_ids_str,
+                    'image_review_results': image_review_results_str,
+                    'forbidden': forbidden,
+                    'partial_completion': partial_completion,
+                    'step_statuses': step_statuses_str,
+                    'image_statuses': image_statuses_str,
+                    'selfie': json.dumps(selfie_data) if selfie_data else None,
+                }
+            )
             return Response({"status": "success", "message": f"Verification status for: {pk}", "data": response.json()}, status=status.HTTP_200_OK)
+        
         else:
             return Response({"status": "failed", "message": response.json()}, status=response.status_code)
 
 
 
+    @action(detail=True, methods=['get'])
+    def get_saved_verification_data(self, request, pk=None):
 
+        applicant_id = pk
+        if not applicant_id:
+            return Response({"status": "failed", "message": "Applicant ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        else:
+            applicant = VerificationStatus.objects.filter(applicant_id=applicant_id).first()
+            serializer = VerificationSerializer(applicant)
+            return Response({"status": "success", "message": f"Verification data for applicant {applicant_id}", "data": serializer.data}, status=status.HTTP_200_OK)
 
 
 
