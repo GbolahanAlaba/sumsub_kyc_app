@@ -91,18 +91,17 @@ You should now be able to access the application at http://127.0.0.1:8000/api/.
 - **Response**:
 
   ```json
-
-
   {
-    "status": "failed",
-    "message": {
-        "id": "66fe86edf6ef587111670580",
-        "createdAt": "2024-10-03 11:58:37",
+    "status": "success",
+    "message": "applicant created successfully",
+    "data": {
+        "id": "66fea5d8f7da9104ccf04036",
+        "createdAt": "2024-10-03 14:10:32",
         "createdBy": "service-sbx-APBRRXWFWAVYKL-app-gb",
         "key": "APBRRXWFWAVYKL",
         "clientId": "entacrest.com",
-        "inspectionId": "66fe86edf6ef587111670580",
-        "externalUserId": "554544",
+        "inspectionId": "66fea5d8f7da9104ccf04036",
+        "externalUserId": "5990vv544",
         "info": {
             "companyInfo": {
                 "companyName": "Expedier",
@@ -138,12 +137,12 @@ You should now be able to access the application at http://127.0.0.1:8000/api/.
             ]
         },
         "review": {
-            "reviewId": "JokQk",
-            "attemptId": "BLObF",
+            "reviewId": "PRkXY",
+            "attemptId": "lVPhL",
             "attemptCnt": 0,
             "levelName": "Cam",
             "levelAutoCheckMode": null,
-            "createDate": "2024-10-03 11:58:37+0000",
+            "createDate": "2024-10-03 14:10:32+0000",
             "reviewStatus": "init",
             "priority": 0
         },
