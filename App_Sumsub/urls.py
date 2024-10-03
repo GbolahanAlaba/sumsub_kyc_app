@@ -11,7 +11,3 @@ urlpatterns = [
    path('get-verification-status/<str:pk>/', SumsubViewSet.as_view({'get': 'get_applicant_verification_status'}), name='verification-status'),
    path('get-saved-status/<str:pk>/', SumsubViewSet.as_view({'get': 'get_saved_verification_data'}), name='saved-verification'),
 ]
-
-# urlpatterns = [
-#     path('create/', create_applicant, name='sample-api'),
-# ]

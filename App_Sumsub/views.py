@@ -51,6 +51,7 @@ class SumsubViewSet(viewsets.ViewSet):
         prepared_request.headers['X-App-Access-Sig'] = signature.hexdigest()
         return prepared_request
 
+    
     @handle_exceptions
     @action(detail=False, methods=['post'])
     def create_applicant(self, request):
@@ -80,7 +81,9 @@ class SumsubViewSet(viewsets.ViewSet):
             return Response({"status": "success", "message": "Applicant created successfully", "data": response.json()}, status=status.HTTP_201_CREATED)
         else:
             return Response({"status": "failed", "message": response.json()}, status=response.status_code)
+        
 
+    @handle_exceptions
     @action(detail=True, methods=['post'])
     def add_document(self, request, pk=None):
         """Add a document to the applicant."""
@@ -129,7 +132,7 @@ class SumsubViewSet(viewsets.ViewSet):
             logging.error(f"Error while adding document: {str(e)}")
             return Response({"status": "failed", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+    @handle_exceptions
     @action(detail=True, methods=['get'])
     def get_applicant_verification_status(self, request, pk=None):
         """
@@ -168,7 +171,7 @@ class SumsubViewSet(viewsets.ViewSet):
             step_statuses_str = json.dumps(step_statuses) if step_statuses else "[]"
             image_statuses_str = json.dumps(image_statuses) if image_statuses else "[]"
 
-            # Create or update the verification status in the database
+            """ Create or update the verification status in the database """
             verification_status, created = VerificationStatus.objects.update_or_create(
                 applicant_id=applicant_id,
                 defaults={
@@ -188,7 +191,7 @@ class SumsubViewSet(viewsets.ViewSet):
             return Response({"status": "failed", "message": "Error fetching data from Sumsub."}, status=response.status_code)
 
 
-
+    @handle_exceptions
     @action(detail=True, methods=['get'])
     def get_saved_verification_data(self, request, pk=None):
 
