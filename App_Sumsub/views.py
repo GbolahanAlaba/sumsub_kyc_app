@@ -166,11 +166,7 @@ class SumsubViewSet(viewsets.ViewSet):
             partial_completion = identity_data.get("partialCompletion", None)
             step_statuses = identity_data.get("stepStatuses", None)
             image_statuses = identity_data.get("imageStatuses", [])
-
-            image_ids_str = json.dumps(image_ids) if image_ids else "[]"
-            image_review_results_str = json.dumps(image_review_results) if image_review_results else "{}"
-            step_statuses_str = json.dumps(step_statuses) if step_statuses else "[]"
-            image_statuses_str = json.dumps(image_statuses) if image_statuses else "[]"
+            
 
             """ Create or update the verification status in the database """
             verification_status, created = VerificationStatus.objects.update_or_create(
@@ -178,12 +174,12 @@ class SumsubViewSet(viewsets.ViewSet):
                 defaults={
                     'country': country,
                     'id_doc_type': id_doc_type,
-                    'image_ids': image_ids_str,
-                    'image_review_results': image_review_results_str,
+                    'image_ids': image_ids,
+                    'image_review_results': image_review_results,
                     'forbidden': forbidden,
                     'partial_completion': partial_completion,
-                    'step_statuses': step_statuses_str,
-                    'image_statuses': image_statuses_str,
+                    'step_statuses': step_statuses,
+                    'image_statuses': image_statuses,
                     'selfie': json.dumps(selfie_data) if selfie_data else None,
                 }
             )
