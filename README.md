@@ -60,7 +60,7 @@ You should now be able to access the application at http://127.0.0.1:8000/api/.
 ## **API Endpoints**
 
 - `POST /create-applicant/`: Create a new applicant.
-- `POST /add-id-document/{applicant_id}`: Upload applicant ID document.
+- `POST /add-id-document/{applicant_id}/`: Upload applicant ID document.
 - `GET /applicant-status/{applicant_id}/`: Get applicant verification status.
 
 
