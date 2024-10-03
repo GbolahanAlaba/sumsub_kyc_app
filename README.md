@@ -181,9 +181,9 @@ You should now be able to access the application at http://127.0.0.1:8000/api/.
     }
   }
 
-`201 Created` on success.
+`200 OK` on success.
 
-`409 Conflict` on conflict error.
+`400 Bad Request` on validation error.
 
 `509 Internal Server Error` on server error.
 
