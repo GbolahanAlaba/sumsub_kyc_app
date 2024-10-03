@@ -87,6 +87,7 @@ class SumsubViewSet(viewsets.ViewSet):
     @handle_exceptions
     @action(detail=True, methods=['post'])
     def add_document(self, request, pk=None):
+        
         """Add a document to the applicant."""
         applicant_id = pk
         img_url = request.data.get('img_url')
