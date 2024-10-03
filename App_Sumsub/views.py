@@ -50,6 +50,7 @@ class SumsubViewSet(viewsets.ViewSet):
         prepared_request.headers['X-App-Access-Sig'] = signature.hexdigest()
         return prepared_request
 
+    @handle_exceptions
     @action(detail=False, methods=['post'])
     def create_applicant(self, request):
         external_user_id = request.data.get('externalUserId')
