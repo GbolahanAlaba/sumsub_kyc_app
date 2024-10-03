@@ -100,7 +100,7 @@ Base URL - `http://127.0.0.1:8000/api/`
         "createdAt": "2024-10-03 14:10:32",
         "createdBy": "service-sbx-APBRRXWFWAVYKL-app-gb",
         "key": "APBRRXWFWAVYKL",
-        "clientId": "entacrest.com",
+        "clientId": "globalme.com",
         "inspectionId": "66fea5d8f7da9104ccf04036",
         "externalUserId": "5990vv544",
         "info": {
