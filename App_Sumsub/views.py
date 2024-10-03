@@ -29,6 +29,7 @@ def handle_exceptions(func):
 
 class SumsubViewSet(viewsets.ViewSet):
     
+    @handle_exceptions
     def sign_request(self, request: requests.Request) -> requests.PreparedRequest:
         prepared_request = request.prepare()
         now = int(time.time())
@@ -51,7 +52,7 @@ class SumsubViewSet(viewsets.ViewSet):
         prepared_request.headers['X-App-Access-Sig'] = signature.hexdigest()
         return prepared_request
 
-    
+
     @handle_exceptions
     @action(detail=False, methods=['post'])
     def create_applicant(self, request):
@@ -198,7 +199,6 @@ class SumsubViewSet(viewsets.ViewSet):
         applicant_id = pk
         if not applicant_id:
             return Response({"status": "failed", "message": "Applicant ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
         else:
             applicant = VerificationStatus.objects.filter(applicant_id=applicant_id).first()
             serializer = VerificationSerializer(applicant)
