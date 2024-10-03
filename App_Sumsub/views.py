@@ -187,10 +187,6 @@ class SumsubViewSet(viewsets.ViewSet):
         else:
             return Response({"status": "failed", "message": "Error fetching data from Sumsub."}, status=response.status_code)
 
-        
-        # else:
-        #     return Response({"status": "failed", "message": response.json()}, status=response.status_code)
-
 
 
     @action(detail=True, methods=['get'])
