@@ -147,6 +147,7 @@ class SumsubViewSet(viewsets.ViewSet):
         
         if response.status_code == 200:
             data = response.json()
+            # print(data) remove comment to print the result in terminal
 
             """ Extract identity and self data directly from the top-level response """
             identity_data = data.get("IDENTITY", {})
