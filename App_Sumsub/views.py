@@ -131,7 +131,7 @@ class SumsubViewSet(viewsets.ViewSet):
             return Response({"status": "failed", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         
-    # @handle_exceptions
+    @handle_exceptions
     @action(detail=True, methods=['get'])
     def fetch_verification_status(self, request, pk=None):
         """
