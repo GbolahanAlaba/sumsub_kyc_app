@@ -17,7 +17,7 @@ class SumsubViewSetTestCase(APITestCase):
         self.create_applicant_url = reverse('applicant-creation')
         # self.add_document_url = lambda pk: reverse('document-add', kwargs={'pk': pk})
         self.add_document_url = reverse('document-add', kwargs={'pk': self.applicant_id})
-        self.get_verification_status_url = lambda pk: reverse('verification-status', kwargs={'pk': pk})
+        self.fetch_verification_status_url = lambda pk: reverse('verification-status-fetch', kwargs={'pk': pk})
         self.get_saved_verification_data_url = lambda pk: reverse('saved-verification', kwargs={'pk': pk})
    
  
@@ -206,9 +206,9 @@ class SumsubViewSetTestCase(APITestCase):
 
 
 
-    # GET APPLICANT VERIFICATION STATUS TEST
+    # FETCH VERIFICATION STATUS TEST
     @patch('requests.Session.send')
-    def test_get_applicant_verification_status_success(self, mock_send):
+    def test_fetch_verification_status_success(self, mock_send):
         # Mock the response from the external API
         mock_response = {
             "IDENTITY": {
@@ -226,7 +226,7 @@ class SumsubViewSetTestCase(APITestCase):
         mock_send.return_value.status_code = 200
         mock_send.return_value.json.return_value = mock_response
 
-        response = self.client.get(self.get_verification_status_url(self.id))
+        response = self.client.get(self.fetch_verification_status_url(self.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], 'success')
@@ -245,9 +245,9 @@ class SumsubViewSetTestCase(APITestCase):
         self.assertEqual(verification_status.selfie, '{"status": "approved"}')
 
     @patch('requests.Session.send')
-    def test_get_applicant_verification_status_api_error(self, mock_send):
+    def test_fetch_verification_status_api_error(self, mock_send):
         mock_send.return_value.status_code = 500  # Simulate a server error
-        response = self.client.get(self.get_verification_status_url(self.id))
+        response = self.client.get(self.fetch_verification_status_url(self.id))
         self.assertEqual(response.status_code, 500)
         self.assertEqual(response.data['status'], 'failed')
         self.assertEqual(response.data['message'], 'Error fetching data from Sumsub.')
@@ -279,8 +279,8 @@ class SumsubURLTestCase(APITestCase):
         self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'post': 'add_document'}).__name__)
 
     def test_view_book_url(self):
-        url = reverse('verification-status', kwargs={'pk': 'pk'})
-        self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'get': 'get_applicant_verification_status'}).__name__)
+        url = reverse('verification-status-fetch', kwargs={'pk': 'pk'})
+        self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'get': 'fetch_verification_status'}).__name__)
     
     def test_filter_books_url(self):
         url = reverse('saved-verification', kwargs={'pk': 'pk'})

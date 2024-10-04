@@ -133,7 +133,7 @@ class SumsubViewSet(viewsets.ViewSet):
         
     @handle_exceptions
     @action(detail=True, methods=['get'])
-    def get_applicant_verification_status(self, request, pk=None):
+    def fetch_verification_status(self, request, pk=None):
         """
         Get the status of an applicant using the applicant ID.
         """

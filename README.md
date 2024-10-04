@@ -62,8 +62,8 @@ Base URL - `http://127.0.0.1:8000/api`
 
 - `POST /create-applicant/`: Create a new applicant.
 - `POST /add-id-document/{applicant_id}/`: Upload applicant ID document.
-- `GET /get-verification-status/{applicant_id}/`: Get applicant verification status.
-- `GET /get-saved-verification-status/{applicant_id}/`: Get applicant verification status.
+- `GET /fetch-verification-status/{applicant_id}/`: Fetch applicant verification status.
+- `GET /get-saved-verification-status/{applicant_id}/`: Get saved applicant verification status.
 
 
 ## **API Implementation**
@@ -191,7 +191,7 @@ Base URL - `http://127.0.0.1:8000/api`
 
 
 
-#### GET /get-verification-status/{applicant_id}/
+#### GET /fetch-verification-status/{applicant_id}/
 
 - **Response**:
 
