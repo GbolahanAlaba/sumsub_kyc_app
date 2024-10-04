@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
+# from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,8 +128,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-SUMSUB_TOKEN = "sbx:1yxaEOVMbi8RpelWdtR8XAH6.jPmZRmFJegFAc6NTvyWEJ7vmF0XwaVTA"
-SUMSUB_SECRET_KEY = "d9RNCmwxN55GFSXp7S3XZB2f3ow2CHbI"
+# SUMSUB_TOKEN = "sbx:1yxaEOVMbi8RpelWdtR8XAH6.jPmZRmFJegFAc6NTvyWEJ7vmF0XwaVTA"
+# SUMSUB_SECRET_KEY = "d9RNCmwxN55GFSXp7S3XZB2f3ow2CHbI"
 REQUEST_TIMEOUT = 10
 
 # SUMSUB_TOKEN = config("SUMSUB_SECRET_KEY")

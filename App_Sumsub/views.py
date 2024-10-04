@@ -8,7 +8,6 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.conf import settings
 from functools import wraps
-from decouple import config
 import hashlib
 import hmac
 import json
