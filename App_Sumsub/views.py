@@ -131,7 +131,7 @@ class SumsubViewSet(viewsets.ViewSet):
             return Response({"status": "failed", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         
-    @handle_exceptions
+    # @handle_exceptions
     @action(detail=True, methods=['get'])
     def fetch_verification_status(self, request, pk=None):
         """
@@ -152,9 +152,12 @@ class SumsubViewSet(viewsets.ViewSet):
             identity_data = data.get("IDENTITY", {})
             selfie_data = data.get("SELFIE", None)
 
+            if identity_data is None:
+                identity_data = {}
+
             """Extract values from the verification status"""
-            country = identity_data.get("country", "Unknown")
-            id_doc_type = identity_data.get("idDocType", "Unknown")
+            country = identity_data.get("country", "")
+            id_doc_type = identity_data.get("idDocType", "")
             image_ids = identity_data.get("imageIds", [])
             image_review_results = identity_data.get("imageReviewResults", {})
             forbidden = identity_data.get("forbidden", False)
@@ -181,6 +184,15 @@ class SumsubViewSet(viewsets.ViewSet):
         else:
             return Response({"status": "failed", "message": "Error fetching data from Sumsub."}, status=response.status_code)
 
+
+
+    # @handle_exceptions
+    @action(detail=True, methods=['get'])
+    def fetch_all_saved_verification_data(self, request):
+        
+        applicant = VerificationStatus.objects.all()
+        serializer = VerificationSerializer(applicant, many=True)
+        return Response({"status": "success", "message": f"All saved Verification data", "data": serializer.data}, status=status.HTTP_200_OK)
 
     @handle_exceptions
     @action(detail=True, methods=['get'])

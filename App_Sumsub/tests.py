@@ -278,11 +278,15 @@ class SumsubURLTestCase(APITestCase):
         url = reverse('document-add', kwargs={'pk': 'pk'})
         self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'post': 'add_document'}).__name__)
 
-    def test_view_book_url(self):
+    def test_fetch_verification_status(self):
         url = reverse('verification-status-fetch', kwargs={'pk': 'pk'})
         self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'get': 'fetch_verification_status'}).__name__)
     
-    def test_filter_books_url(self):
+    def fetch_all_saved_verification_data(self):
+        url = reverse('all_saved-verification-fetch')
+        self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'get': 'fetch_all_saved_verification_data'}).__name__)
+
+    def get_saved_verification_data(self):
         url = reverse('saved-verification', kwargs={'pk': 'pk'})
         self.assertEqual(resolve(url).func.__name__, SumsubViewSet.as_view({'get': 'get_saved_verification_data'}).__name__)
 
