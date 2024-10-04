@@ -63,7 +63,8 @@ Base URL - `http://127.0.0.1:8000/api`
 - `POST /create-applicant/`: Create a new applicant.
 - `POST /add-id-document/{applicant_id}/`: Upload applicant ID document.
 - `GET /fetch-verification-status/{applicant_id}/`: Fetch applicant verification status.
-- `GET /get-saved-verification-status/{applicant_id}/`: Get saved applicant verification status.
+- `GET /all-saved-verification-status/`: Get all saved applicant verification status data.
+- `GET /get-saved-verification-status/{applicant_id}/`: Get saved applicant verification status data.
 
 
 ## **API Implementation**
@@ -212,6 +213,67 @@ Base URL - `http://127.0.0.1:8000/api`
 `509 Internal Server Error` on server error.
 
 
+#### GET /all-saved-verification-status/
+
+- **Response**:
+
+  ```json
+  {
+    "status": "success",
+    "message": "All saved Verification data",
+    "data": [
+        {
+            "applicant_id": "66fe86b143297b0628f286ac",
+            "country": "USA",
+            "id_doc_type": "PASSPORT",
+            "image_ids": [
+                1306190006
+            ],
+            "image_review_results": {
+                "1306190006": {}
+            },
+            "forbidden": false,
+            "partial_completion": null,
+            "step_statuses": null,
+            "image_statuses": [],
+            "selfie": null
+        },
+        {
+            "applicant_id": "66fe7d5e43297b0628f2054d",
+            "country": "USA",
+            "id_doc_type": "PASSPORT",
+            "image_ids": [
+                62458182
+            ],
+            "image_review_results": {
+                "62458182": {}
+            },
+            "forbidden": false,
+            "partial_completion": null,
+            "step_statuses": null,
+            "image_statuses": [],
+            "selfie": null
+        },
+        {
+            "applicant_id": "66ff9996af3a7e2194c8ba19",
+            "country": "Unknown",
+            "id_doc_type": "Unknown",
+            "image_ids": [],
+            "image_review_results": {},
+            "forbidden": false,
+            "partial_completion": null,
+            "step_statuses": null,
+            "image_statuses": [],
+            "selfie": null
+        }
+    ]
+  }
+
+`200 OK` with all applicant successful verification status data.
+
+`509 Internal Server Error` on server error.
+
+
 #### GET /get-saved-verification-status/{applicant_id}/
 
 - **Response**:
@@ -234,7 +296,7 @@ Base URL - `http://127.0.0.1:8000/api`
     }
   }
 
-`200 OK` with applicant successful verification status.
+`200 OK` with an applicant successful verification status.
 
 `400 Bad Request` on validation error.
 

@@ -187,7 +187,7 @@ class SumsubViewSet(viewsets.ViewSet):
 
 
 
-    # @handle_exceptions
+    @handle_exceptions
     @action(detail=True, methods=['get'])
     def fetch_all_saved_verification_data(self, request):
         
