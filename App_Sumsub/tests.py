@@ -34,7 +34,94 @@ class SumsubViewSetTestCase(APITestCase):
             selfie={'status': 'approved'},
         )
 
+    # CREATE APPLICANT UNIT TEST
+    @patch('requests.Session.send')
+    def test_create_applicant_success(self, mock_send):
+        """Test successfully creating an applicant"""
+        
+        # Mock the external API response
+        mock_response = mock_send.return_value
+        mock_response.status_code = 201
+        mock_response.json.return_value = {
+            "id": "applicant-id-123",
+            "externalUserId": "user-123",
+            "status": "created"
+        }
 
+        # Prepare the request data
+        data = {
+            'externalUserId': 'user-123',
+            'info': {'firstName': 'John', 'lastName': 'Doe'},
+            'type': 'individual',
+            'levelName': 'basic-kyc-level'
+        }
+
+        # Perform the request
+        response = self.client.post(self.create_applicant_url, data, format='json')
+
+        # Check that the mocked API call was made
+        payload = {
+            "externalUserId": 'user-123',
+            "info": {'firstName': 'John', 'lastName': 'Doe'},
+            "type": 'individual',
+        }
+        expected_url = 'https://api.sumsub.com/resources/applicants?levelName=basic-kyc-level'
+        mock_send.assert_called_once()
+
+        # Check response status and message
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['status'], 'success')
+        self.assertIn('Applicant created successfully', response.data['message'])
+
+    @patch('requests.Session.send')
+    def test_create_applicant_missing_external_user_id(self, mock_send):
+        """Test missing externalUserId returns a 400 error"""
+        
+        # Prepare the request data (missing externalUserId)
+        data = {
+            'info': {'firstName': 'John', 'lastName': 'Doe'},
+            'type': 'individual',
+            'levelName': 'basic-kyc-level'
+        }
+
+        # Perform the request
+        response = self.client.post(self.create_applicant_url, data, format='json')
+
+        # Check response status and message
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['status'], 'failed')
+        self.assertIn('externalUserId is required', response.data['message'])
+
+    @patch('requests.Session.send')
+    def test_create_applicant_failed(self, mock_send):
+        """Test failed applicant creation from Sumsub API"""
+        
+        # Mock the external API response for failure
+        mock_response = mock_send.return_value
+        mock_response.status_code = 400
+        mock_response.json.return_value = {"error": "Invalid request"}
+
+        # Prepare the request data
+        data = {
+            'externalUserId': 'user-123',
+            'info': {'firstName': 'John', 'lastName': 'Doe'},
+            'type': 'individual',
+            'levelName': 'basic-kyc-level'
+        }
+
+        # Perform the request
+        response = self.client.post(self.create_applicant_url, data, format='json')
+
+        # Check response status and message for failure
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['status'], 'failed')
+
+        # Since the error is returned in the 'error' field, check there
+        self.assertIn('Invalid request', response.data['message']['error'])
+
+
+
+    # ADD DOCUMENT UNIT TEST
     @patch('requests.get')
     @patch('requests.Session.send')
     def test_add_document_success(self, mock_send, mock_get):
