@@ -68,12 +68,6 @@ class SumsubViewSetTestCase(APITestCase):
         self.assertEqual(verification_status.image_statuses, ["img1: approved", "img2: pending"])
         self.assertEqual(verification_status.selfie, '{"status": "approved"}')
 
-    def test_get_applicant_verification_status_missing_applicant_id(self):
-        response = self.client.get(self.get_verification_status_url(None))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['status'], 'failed')
-        self.assertEqual(response.data['message'], 'Error fetching data from Sumsub.')
-
     @patch('requests.Session.send')
     def test_get_applicant_verification_status_api_error(self, mock_send):
         mock_send.return_value.status_code = 500  # Simulate a server error
@@ -90,12 +84,6 @@ class SumsubViewSetTestCase(APITestCase):
         self.assertEqual(response.data['status'], 'success')
         self.assertIn('data', response.data)
         self.assertEqual(response.data['data']['applicant_id'], self.applicant.applicant_id)  
-
-    def test_get_saved_verification_data_missing_applicant_id(self):
-        response = self.client.get(self.get_saved_verification_data_url(None))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['status'], 'failed')
-        self.assertEqual(response.data['message'], 'Applicant ID is required')
 
     def test_get_saved_verification_data_applicant_not_found(self):
         response = self.client.get(self.get_saved_verification_data_url('nonexistent_id'))

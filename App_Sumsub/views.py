@@ -87,7 +87,7 @@ class SumsubViewSet(viewsets.ViewSet):
     @handle_exceptions
     @action(detail=True, methods=['post'])
     def add_document(self, request, pk=None):
-        
+
         """Add a document to the applicant."""
         applicant_id = pk
         img_url = request.data.get('img_url')
@@ -142,8 +142,6 @@ class SumsubViewSet(viewsets.ViewSet):
         Get the status of an applicant using the applicant ID.
         """
         applicant_id = pk
-        if not applicant_id:
-            return Response({"status": "failed", "message": "Applicant ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         SUMSUB_TEST_BASE_URL = "https://api.sumsub.com"
         url = f"{SUMSUB_TEST_BASE_URL}/resources/applicants/{applicant_id}/requiredIdDocsStatus"
@@ -193,9 +191,9 @@ class SumsubViewSet(viewsets.ViewSet):
     def get_saved_verification_data(self, request, pk=None):
 
         applicant_id = pk
-        if not applicant_id:
-            return Response({"status": "failed", "message": "Applicant ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-        elif not VerificationStatus.objects.filter(applicant_id=applicant_id).first():
+        obj = VerificationStatus.objects.filter(applicant_id=applicant_id).first()
+        
+        if not obj:
             return Response({"status": "failed", "message": "Applicant not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
             applicant = VerificationStatus.objects.get(applicant_id=applicant_id)
