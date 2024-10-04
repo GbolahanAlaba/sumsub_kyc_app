@@ -5,15 +5,18 @@ from django.test import TestCase
 from . models import *
 from . views import SumsubViewSet
 from datetime import date, timedelta, datetime
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
+import requests
 
 
 # TEST FOR VIEWS
 class SumsubViewSetTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
+        self.applicant_id = '12345'
         self.create_applicant_url = reverse('applicant-creation')
-        self.add_document = lambda pk: reverse('document-add', kwargs={'pk': pk})
+        # self.add_document_url = lambda pk: reverse('document-add', kwargs={'pk': pk})
+        self.add_document_url = reverse('document-add', kwargs={'pk': self.applicant_id})
         self.get_verification_status_url = lambda pk: reverse('verification-status', kwargs={'pk': pk})
         self.get_saved_verification_data_url = lambda pk: reverse('saved-verification', kwargs={'pk': pk})
    
@@ -31,6 +34,92 @@ class SumsubViewSetTestCase(APITestCase):
             selfie={'status': 'approved'},
         )
 
+
+    @patch('requests.get')
+    @patch('requests.Session.send')
+    def test_add_document_success(self, mock_send, mock_get):
+        """Test successfully adding a document for the applicant"""
+        
+        # Mock the external image request response (requests.get)
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.iter_content.return_value = [b'image data']
+
+        # Mock the external Sumsub API response
+        mock_response = mock_send.return_value
+        mock_response.status_code = 200
+        mock_response.json.return_value = {'message': 'Document added successfully'}
+
+        data = {
+            'img_url': 'https://example.com/img.jpg',
+            'idDocType': 'passport',
+            'country': 'US'
+        }
+
+        response = self.client.post(self.add_document_url, data, format='json')
+
+        # Check that requests.get was called with the correct URL and timeout
+        mock_get.assert_called_once_with('https://example.com/img.jpg', stream=True, timeout=10)
+        
+        # Check the response from the Sumsub API
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('Document added successfully', response.data['message'])
+
+    def test_add_document_missing_fields(self):
+        # Missing img_url, idDocType, or country
+        data = {
+            'img_url': 'http://example.com/img.jpg',  # Missing idDocType and country
+        }
+
+        response = self.client.post(self.add_document_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['status'], 'failed')
+        self.assertEqual(response.data['message'], 'img_url, idDocType, and country are required')
+
+    @patch('requests.get')
+    def test_add_document_image_download_failed(self, mock_get):
+        # Simulate a failure while downloading the image
+        mock_get.side_effect = requests.exceptions.RequestException("Image download failed")
+
+        data = {
+            'img_url': 'http://example.com/img.jpg',
+            'idDocType': 'passport',
+            'country': 'USA',
+        }
+
+        response = self.client.post(self.add_document_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data['status'], 'failed')
+        self.assertEqual(response.data['message'], 'Image download failed')
+
+    @patch('requests.Session.send')
+    @patch('builtins.open', new_callable=mock_open, read_data=b'dummy image data')
+    @patch('requests.get')
+    def test_add_document_external_api_failure(self, mock_get, mock_open, mock_send):
+        # Mock image download success
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.iter_content = lambda chunk_size: [b'dummy image data']
+
+        # Mock external API failure
+        mock_send.return_value.status_code = 500
+        mock_send.return_value.json.return_value = {"error": "API error"}
+
+        data = {
+            'img_url': 'http://example.com/img.jpg',
+            'idDocType': 'passport',
+            'country': 'USA',
+        }
+
+        response = self.client.post(self.add_document_url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(response.data['status'], 'failed')
+        self.assertEqual(response.data['message'], {'error': 'API error'})
+
+
+
+    # GET APPLICANT VERIFICATION STATUS TEST
     @patch('requests.Session.send')
     def test_get_applicant_verification_status_success(self, mock_send):
         # Mock the response from the external API
