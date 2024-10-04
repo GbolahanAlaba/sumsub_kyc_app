@@ -88,7 +88,10 @@ class SumsubViewSet(viewsets.ViewSet):
     @action(detail=True, methods=['post'])
     def add_document(self, request, pk=None):
 
-        """Add a document to the applicant."""
+        """
+        Add applicant document using the applicant ID.
+        """
+
         applicant_id = pk
         img_url = request.data.get('img_url')
         id_doc_type = request.data.get('idDocType')
@@ -97,12 +100,10 @@ class SumsubViewSet(viewsets.ViewSet):
         if not img_url or not id_doc_type or not country:
             return Response({"status": "failed", "message": "img_url, idDocType, and country are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        """Download the image"""
         try:
             img_response = requests.get(img_url, stream=True, timeout=settings.REQUEST_TIMEOUT)
             img_response.raise_for_status()
 
-            """Save the image temporarily"""
             img_file_path = 'images/img.jpg'
             with open(img_file_path, 'wb') as handle:
                 for block in img_response.iter_content(1024):
@@ -116,12 +117,7 @@ class SumsubViewSet(viewsets.ViewSet):
             }
 
             url = f"https://api.sumsub.com/resources/applicants/{applicant_id}/info/idDoc"
-            request_obj = requests.Request(
-                'POST', 
-                url, 
-                files={'content': open(img_file_path, 'rb')},  # Open the image file
-                data={'metadata': json.dumps(metadata)}  # Send metadata as a string
-            )
+            request_obj = requests.Request('POST', url, files={'content': open(img_file_path, 'rb')}, data={'metadata': json.dumps(metadata)})
 
             signed_request = self.sign_request(request_obj)
             response = requests.Session().send(signed_request)
@@ -152,7 +148,7 @@ class SumsubViewSet(viewsets.ViewSet):
         if response.status_code == 200:
             data = response.json()
 
-            """ Extract identity_data directly from the top-level response """
+            """ Extract identity and self data directly from the top-level response """
             identity_data = data.get("IDENTITY", {})
             selfie_data = data.get("SELFIE", None)
 
