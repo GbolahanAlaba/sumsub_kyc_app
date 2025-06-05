@@ -2,55 +2,21 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from . models import VerificationStatus
 from . serializers import VerificationSerializer
+from . utils import handle_exceptions, sign_request
 import requests
 import json
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.conf import settings
 from functools import wraps
-import hashlib
-import hmac
 import json
-import time
 import logging
-
-def handle_exceptions(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            error_message = str(e)
-            return Response({"status": "failed", "message": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    return wrapper
 
 
 class SumsubViewSet(viewsets.ViewSet):
+
+    BASE_URL = "https://api.sumsub.com"
     
-    @handle_exceptions
-    def sign_request(self, request: requests.Request) -> requests.PreparedRequest:
-        prepared_request = request.prepare()
-        now = int(time.time())
-        method = request.method.upper()
-        path_url = prepared_request.path_url  # includes encoded query params
-        body = b'' if prepared_request.body is None else prepared_request.body
-        if isinstance(body, str):
-            body = body.encode('utf-8')
-
-        data_to_sign = str(now).encode('utf-8') + method.encode('utf-8') + path_url.encode('utf-8') + body
-
-        signature = hmac.new(
-            settings.SUMSUB_SECRET_KEY.encode('utf-8'),
-            data_to_sign,
-            digestmod=hashlib.sha256
-        )
-
-        prepared_request.headers['X-App-Token'] = settings.SUMSUB_TOKEN
-        prepared_request.headers['X-App-Access-Ts'] = str(now)
-        prepared_request.headers['X-App-Access-Sig'] = signature.hexdigest()
-        return prepared_request
-
 
     @handle_exceptions
     @action(detail=False, methods=['post'])
@@ -69,11 +35,11 @@ class SumsubViewSet(viewsets.ViewSet):
             "type": type,
         }
 
-        url = f"https://api.sumsub.com/resources/applicants?levelName={level_name}"
+        url = f"{self.BASE_URL}/resources/applicants?levelName={level_name}"
         headers = {'Content-Type': 'application/json'}
         request_obj = requests.Request('POST', url, headers=headers, json=payload)
 
-        signed_request = self.sign_request(request_obj)
+        signed_request = sign_request(request_obj)
 
         response = requests.Session().send(signed_request)
         
@@ -115,10 +81,10 @@ class SumsubViewSet(viewsets.ViewSet):
                 "country": country
             }
 
-            url = f"https://api.sumsub.com/resources/applicants/{applicant_id}/info/idDoc"
+            url = f"{self.BASE_URL}/resources/applicants/{applicant_id}/info/idDoc"
             request_obj = requests.Request('POST', url, files={'content': open(img_file_path, 'rb')}, data={'metadata': json.dumps(metadata)})
 
-            signed_request = self.sign_request(request_obj)
+            signed_request = sign_request(request_obj)
             response = requests.Session().send(signed_request)
             if response.status_code == 200:
                 return Response({"status": "success", "message": "Document added successfully", "data": response.json()}, status=response.status_code)
@@ -138,10 +104,9 @@ class SumsubViewSet(viewsets.ViewSet):
         """
         applicant_id = pk
 
-        SUMSUB_TEST_BASE_URL = "https://api.sumsub.com"
-        url = f"{SUMSUB_TEST_BASE_URL}/resources/applicants/{applicant_id}/requiredIdDocsStatus"
+        url = f"{self.BASE_URL}/resources/applicants/{applicant_id}/requiredIdDocsStatus"
         request_obj = requests.Request('GET', url)
-        signed_request = self.sign_request(request_obj)
+        signed_request = sign_request(request_obj)
         response = requests.Session().send(signed_request)
         
         if response.status_code == 200:
